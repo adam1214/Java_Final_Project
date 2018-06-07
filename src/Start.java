@@ -18,11 +18,17 @@ public class Start extends JFrame implements ActionListener {
 	public Start() {
 		f = new JFrame("開始畫面");
 		try {
-			JButton btn = new JButton("開始遊戲");
+			JButton btn = new JButton("單人遊戲");
 			f.add(btn, BorderLayout.NORTH);
 			btn.setLocation(550, 200);
 			btn.setSize(100, 100);
 			f.getContentPane().add(btn);
+			
+			JButton btn1 = new JButton("雙人對戰");
+			f.add(btn1, BorderLayout.NORTH);
+			btn1.setLocation(550, 350);
+			btn1.setSize(100, 100);
+			f.getContentPane().add(btn1);
 
 //			ImageIcon icon = new ImageIcon("Startbackground.png");
 //			JLabel lb = new JLabel(icon);
@@ -52,6 +58,13 @@ public class Start extends JFrame implements ActionListener {
 				public void actionPerformed(ActionEvent e) {
 					f.setVisible(false);
 					new Playing();
+				}
+			});
+			
+			btn1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					f.setVisible(false);
+					
 				}
 			});
 
