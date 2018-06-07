@@ -1,8 +1,10 @@
 package role;
 
+//import window.*;
 
 import java.awt.FlowLayout;
 import java.awt.Image;
+import java.io.Serializable;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -10,7 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class Role {
+public class Role implements Serializable{
 	protected int level;
 	private String name;
 	ImageIcon icon ; 
@@ -18,20 +20,8 @@ public class Role {
 	
 	
 	public Role() {
+		level=1;
 
-//		setSize(800,600);
-//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		setLayout(new FlowLayout());
-//		icon=new ImageIcon(getClass().getResource("/images/pet_pika.jpg"));
-//		icon=new ImageIcon("./image/pet_pika.jpg");
-//		ImageIcon im=new ImageIcon("./image/pet_pika.jpg");
-//		Image image = im.getImage();
-//		Image  newIm=image.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH);
-//		
-//		im = new ImageIcon(newIm);
-//		JLabel lb=new JLabel(im);
-//		lb.setSize(10,10);
-//		add(lb);
 	}
 	
 	public void setIcon(String path) {
@@ -46,6 +36,14 @@ public class Role {
 	
 	public String getPath() {
 		return path;
+	}
+	
+	public void setLevel(int level) {
+		this.level=level;
+	}
+	
+	public int getLevel() {
+		return level;
 	}
 	
 	

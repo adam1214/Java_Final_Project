@@ -18,7 +18,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 	private boolean btnRight, btnLeft, btnUp, btnDown;
 	private DrawPicture player, obj2;
 	private Map map;
-	private TerisPanel terisPanel;
+	private TetrisPanel terisPanel;
 	private int keyFlag, con = 0;
 	private DrawPicture[][] blackSquare = new DrawPicture[6][4];
 	private int blackSquareX = 0, blackSquareY = 0;
@@ -84,7 +84,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 				break;
 			}
 		} else if (keyFlag == 1) {
-			// terisPanel.keyboard(e);
+			terisPanel.keyPressed1(e);
 		}
 
 	}
@@ -329,8 +329,8 @@ public class Mainwindow extends JFrame implements KeyListener {
 			blackSquareX = 0;
 			blackSquareY = 0;
 			blackFlag = false;
-
-			terisPanel = new TerisPanel();
+			PetSeq a=new PetSeq();
+			terisPanel = new TetrisPanel(a);
 			terisPanel.setVisible(true);
 			terisPanel.setBounds(0, 0, 1200, 800);
 			add(terisPanel);

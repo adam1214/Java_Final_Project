@@ -57,7 +57,6 @@ public class Start extends JFrame implements ActionListener {
 			btn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					f.setVisible(false);
-					//new Playing();
 					Mainwindow m = new Mainwindow();
 					m.setVisible(true);
 				}
@@ -66,7 +65,6 @@ public class Start extends JFrame implements ActionListener {
 			btn1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					f.setVisible(false);
-					//new Playing();
 					Mainwindow m = new Mainwindow();
 					m.setVisible(true);
 				}
