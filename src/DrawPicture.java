@@ -3,6 +3,7 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+//123
 
 public class DrawPicture {
 	static JPanel panel;
