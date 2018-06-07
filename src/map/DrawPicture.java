@@ -1,3 +1,4 @@
+package map;
 import java.awt.Image;
 
 import javax.swing.ImageIcon;
@@ -6,13 +7,13 @@ import javax.swing.JPanel;
 //123
 
 public class DrawPicture {
-	static JPanel panel;
+	public static JPanel panel;
 	public int height, width;
 	public int x, y;
 	private ImageIcon icon;
 	private String res;
 	private JLabel label;
-	DrawPicture(String picturePath, int positionX, int positionY, int pictureWidth, int pictureHeight){
+	public DrawPicture(String picturePath, int positionX, int positionY, int pictureWidth, int pictureHeight){
 		resetImg(picturePath);
 		setImgPosition(positionX, positionY);
 		setImgSize(pictureWidth, pictureHeight);

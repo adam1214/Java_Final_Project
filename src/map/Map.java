@@ -1,15 +1,27 @@
+package map;
+
 import java.util.ArrayList;
 
 public class Map {
+	public int mapDirX= 0, mapDirY= 0;
+	public static final int UP= 1, RIGHT= 2, DOWN= 3, LEFT= 4;
 	public MapUnit [][] mapUnit= new MapUnit[3][3];
-	private final int speedX= 10, speedY= 10;
+	private final int speedX= 2, speedY= 2;
 	private final int centerX= 600, centerY= 400;
 	public Map(){
 		for(int i=0; i<3; i++) {
 			for(int j= 0; j < 3; j++) {
-				mapUnit[i][j]= new Map1010(-1200 + (1200 * i), -1200 + (1200 * j));	
+				mapUnit[i][j]= new Map1010(-1250 + (1200 * i), -1250 + (1200 * j));	
 			}			
 		}
+	}
+	
+	public int getMapX() {
+		return mapUnit[1][1].x;
+	}
+	
+	public int getMapY() {
+		return mapUnit[1][1].y;
 	}
 	
 	public void mapUp() {
