@@ -3,6 +3,8 @@ package map;
 import java.util.ArrayList;
 
 public class Map {
+	
+	public static final int MAP_CONTROL= 1, TETRIS_CONTROL= 2, NONE= 3;
 	public int mapDirX= 0, mapDirY= 0;
 	public static final int UP= 1, RIGHT= 2, DOWN= 3, LEFT= 4;
 	public MapUnit [][] mapUnit= new MapUnit[3][3];

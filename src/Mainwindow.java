@@ -34,7 +34,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 		btnLeft = false;
 		btnUp = false;
 		btnDown = false;
-		keyFlag = 0;
+		keyFlag = Map.MAP_CONTROL;
 		addKeyListener(this);
 		DrawPicture.panel = new JPanel(null);
 		DrawPicture.panel.setBounds(0, 0, width, height);
@@ -69,7 +69,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if (keyFlag == 0) {
+		if (keyFlag == Map.MAP_CONTROL) {
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_A:
 				btnLeft = true;
@@ -84,7 +84,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 				btnUp = true;
 				break;
 			}
-		} else if (keyFlag == 1) {
+		} else if (keyFlag == Map.TETRIS_CONTROL) {
 			terisPanel.keyPressed1(e);
 		}
 
@@ -93,7 +93,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if (keyFlag == 0) {
+		if (keyFlag == Map.MAP_CONTROL) {
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_A:
 				btnLeft = false;
@@ -334,6 +334,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 			terisPanel.setVisible(true);
 			terisPanel.setBounds(0, 0, 1200, 800);
 			add(terisPanel);
+			keyFlag = Map.TETRIS_CONTROL;
 			con = 0;
 			return;
 		}
@@ -349,24 +350,24 @@ public class Mainwindow extends JFrame implements KeyListener {
 		}
 		if (num > 40) {
 			blackFlag = true;
-			keyFlag = 1;
 			btnRight = false;
 			btnLeft = false;
 			btnUp = false;
 			btnDown = false;
+			keyFlag= Map.NONE;
 			System.out.println("ok");
 		}
 	}
 	
 	public void checkTetrisStatue() {
-		if(keyFlag == 0)
+		if(keyFlag == Map.MAP_CONTROL)
 			return;
 		if(TetrisPanel.gametime == false) {
 
 			terisPanel.setVisible(false);
 			terisPanel= null;
 			TetrisPanel.gametime= true;
-			keyFlag= 0;
+			keyFlag= Map.MAP_CONTROL;
 			clearBlackAnimate();
 		}
 	}

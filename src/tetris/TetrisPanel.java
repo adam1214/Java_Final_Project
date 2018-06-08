@@ -395,12 +395,6 @@ public class TetrisPanel extends JPanel {
 		}
 	}
 
-	public void keyReleased(KeyEvent e) {
-	}
-
-	public void keyTyped(KeyEvent e) {
-	}
-
 	public void keyPressed1(KeyEvent e) {
 		if (gametime) {
 			switch (e.getKeyCode()) {
