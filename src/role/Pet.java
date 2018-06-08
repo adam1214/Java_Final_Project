@@ -18,7 +18,7 @@ public class Pet extends Role{
 		while(exp>levelExp[level]) {
 			exp=exp-levelExp[level];
 			level++;
-			//setLevel(level);
+			setLevel(level);
 		}
 	}
 	
