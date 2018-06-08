@@ -23,7 +23,8 @@ public class Mainwindow extends JFrame implements KeyListener {
 	private DrawPicture[][] blackSquare = new DrawPicture[6][4];
 	private int blackSquareX = 0, blackSquareY = 0;
 	private boolean blackFlag = false;
-
+	private PetSeq petSeq= new PetSeq();
+	
 	public Mainwindow() {
 		setTitle("Game");
 		setSize(width, height);
@@ -329,12 +330,11 @@ public class Mainwindow extends JFrame implements KeyListener {
 			blackSquareX = 0;
 			blackSquareY = 0;
 			blackFlag = false;
-			PetSeq a=new PetSeq();
-			terisPanel = new TetrisPanel(a);
+			terisPanel = new TetrisPanel(petSeq);
 			terisPanel.setVisible(true);
 			terisPanel.setBounds(0, 0, 1200, 800);
 			add(terisPanel);
-			con = 1;
+			con = 0;
 			return;
 		}
 	}
@@ -357,7 +357,28 @@ public class Mainwindow extends JFrame implements KeyListener {
 			System.out.println("ok");
 		}
 	}
+	
+	public void checkTetrisStatue() {
+		if(keyFlag == 0)
+			return;
+		if(TetrisPanel.gametime == false) {
 
+			terisPanel.setVisible(false);
+			terisPanel= null;
+			TetrisPanel.gametime= true;
+			keyFlag= 0;
+			clearBlackAnimate();
+		}
+	}
+
+	public void clearBlackAnimate() {
+		for(int i= 0; i < 6; i++) {
+			for(int j= 0; j < 4; j++) {
+				blackSquare[i][j].setVisible(false);
+			}
+		}
+	}
+	
 	class TimeChange implements ActionListener {
 
 		@Override
@@ -368,6 +389,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 				blackAnimate();
 
 			openTetris();
+			checkTetrisStatue();
 
 		}
 

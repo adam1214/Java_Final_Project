@@ -190,7 +190,6 @@ public class TetrisPanel extends JPanel {
 		add(win);
 		get_exp();
 		draw_level();
-
 		gametime = false;
 		timer.stop();
 
@@ -344,7 +343,7 @@ public class TetrisPanel extends JPanel {
 				idx--;
 			}
 			for (int k = 1; k <= 7; k++) {
-				if (i == 0 && attack_list[1] != 0) {
+				if (i == 0 && attack_list[k] != 0) {
 					attack();
 					break;
 				}
