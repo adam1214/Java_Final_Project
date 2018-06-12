@@ -5,6 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import role.*;
 
@@ -318,6 +323,7 @@ public class TetrisPanel extends JPanel {
 	}
 
 	void delLine() {
+		playSound();
 		int idx = 19, access = 0;
 		for (int i = 19; i >= 0; i--) {
 			int cnt = 0;
@@ -441,6 +447,17 @@ public class TetrisPanel extends JPanel {
 			System.exit(0);
 		}
 	}
+	static public void playSound() {
+	    try {
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("coin01.mp3").getAbsoluteFile());
+	        Clip clip = AudioSystem.getClip();
+	        clip.open(audioInputStream);
+	        clip.start();
+	    } catch(Exception ex) {
+	        System.out.println("Error with playing sound.123");
+	        ex.printStackTrace();
+	    }
+	}
 
 	class TimerListener implements ActionListener {
 
@@ -449,4 +466,5 @@ public class TetrisPanel extends JPanel {
 			down_shift();
 		}
 	}
+	
 }

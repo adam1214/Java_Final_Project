@@ -9,6 +9,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 
 public class Start extends JFrame implements ActionListener {
@@ -77,31 +81,21 @@ public class Start extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) {
-//		String bip = "Startmusic.mp3";
-//		Media hit = new Media(new File(bip).toURI().toString());
-//		MediaPlayer mediaPlayer = new MediaPlayer(hit);
-//		mediaPlayer.play();
-		//playMusic();
+		playSound();
 		Start graph = new Start();
 	}
 
 	public void actionPerformed(ActionEvent e) {
 	}
-	@SuppressWarnings("deprecation")
-	static void playMusic(){ 
-        try {  
-            URL cb;  
-            File f = new File("Startmusic.mp3"); 
-            cb = f.toURL();  
-            AudioClip aau;  
-            aau = Applet.newAudioClip(cb);  
-          
-            aau.play();   
-            aau.loop(); 
-            System.out.println("¥i¥H¼½©ñ");  
-        } catch (MalformedURLException e) {  
-              
-            e.printStackTrace();  
-        }  
-    }     
+	static public void playSound() {
+	    try {
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("Startmusic.mp3").getAbsoluteFile());
+	        Clip clip = AudioSystem.getClip();
+	        clip.open(audioInputStream);
+	        clip.start();
+	    } catch(Exception ex) {
+	        System.out.println("Error with playing sound.");
+	        ex.printStackTrace();
+	    }
+	}
 }
