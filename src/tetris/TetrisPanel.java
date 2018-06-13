@@ -272,9 +272,8 @@ public class TetrisPanel extends JPanel {
 				}
 				if (num == 7) {
 					timer_paint.stop();
-					//Sleep(3000);
 					num = 0;
-					gametime = false;
+					modeWin();
 				}
 			}
 		}
@@ -313,8 +312,8 @@ public class TetrisPanel extends JPanel {
 			m++;
 			timer.stop();
 			if(m==1) {
-				Sleep(3000);
-				gametime=false;
+				//Sleep(3000);
+				modeLose();
 			}
 			
 		}
@@ -490,6 +489,14 @@ public class TetrisPanel extends JPanel {
 	}
 	public int getDmg() {
 		return total;
+	}
+	public void modeWin() {
+		gametime = false;
+		state= Data.MODE_PERSONAL_WIN;
+	}
+	public void modeLose() {
+		gametime=false;
+		state= Data.MODE_PERSONAL_LOSE;
 	}
 	
 	public void keyPressed1(KeyEvent e) {

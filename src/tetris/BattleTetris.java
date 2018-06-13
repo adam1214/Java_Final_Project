@@ -28,14 +28,25 @@ public class BattleTetris extends TetrisPanel{
 		}
 	}
 	
+	public void modeWin() {
+		gametime = false;
+		state= Data.MODE_BATTLE_WIN;
+	}
+	public void modeLose() {
+		gametime=false;
+		state= Data.MODE_BATTLE_LOSE;
+	}
+	
 	public void paintCharacter(Graphics g) {
-		System.out.println("hello");
+		//System.out.println("hello");
 		final int playerX= 1000, playerY= 100;
 		final int playerHeight= 200, playerWidth= 200;
 		g.drawImage(player, playerX, playerY, playerWidth, playerHeight, null);
     	g.drawImage(blood_red, playerX, playerY + playerHeight + 10, playerWidth, 10, null);
     	if(totalHp >= enemyData.getDmg()) {
     		g.drawImage(blood, playerX, playerY + playerHeight + 10, playerWidth * (totalHp - enemyData.getDmg()) / totalHp, 10, null);
+    	}else {
+    		state= Data.MODE_BATTLE_LOSE;
     	}
 	}
 	
