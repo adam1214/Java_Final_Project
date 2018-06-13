@@ -29,7 +29,7 @@ public class SendClient extends java.lang.Thread implements Serializable{
 	public void run() {
 		try {
 			Socket client = new Socket();
-			client = new Socket("127.0.0.1", 4000);
+			client = new Socket(address, 4000);
 
 			System.out.println("Client 連線成功 準備開始傳資料 !");
 			

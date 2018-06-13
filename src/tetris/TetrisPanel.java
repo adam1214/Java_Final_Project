@@ -5,49 +5,56 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
 import javax.swing.*;
-
-import connect.Data;
 import role.*;
+import connect.*;
 
 public class TetrisPanel extends JPanel {
 	public static boolean gametime = true;
+	private boolean battle_finish = false;
 	public int[][] map = new int[10][20];
+	JButton btn;
 	Pet pet;
 	Enemy enemy;
 	JLabel l_enemy;
 	JLabel[] l_pet = new JLabel[7];
 	int total = 0;
+	int enemy_exp = 78;
 	PetSeq petSeq;
 	Timer timer = new Timer(800, new TimerListener());
+	Timer timer_paint = new Timer(100, new TimerListener_paint());
 	int keyflag = 0;
+	int num = 0;
 	public ImageIcon icon1 = new ImageIcon("blood.png");
 	public ImageIcon image_exp = new ImageIcon("exp.jpg");
+	public ImageIcon image_levelup = new ImageIcon("levelup.png");
 	public JLabel blood[] = new JLabel[100];
-	public JLabel exp[] = new JLabel[100];
+	public JLabel exp[] = new JLabel[7];
 	public JLabel attack_amount[] = new JLabel[7];
 	public JLabel attack_amount_sum[] = new JLabel[7];
 	public JLabel LEVEL[] = new JLabel[7];
 	public JLabel EXP[] = new JLabel[7];
+	public JLabel getexp[] = new JLabel[7];
+	private int[] level_tem = new int[7];
+	private int[] exp_tem = new int[7];
 	public Pet[] pet_array = new Pet[8];
 	public Enemy[] enemy_array = new Enemy[4];
 	public int[] attack_list = new int[8];
 	public int[] attack_list_sum = new int[8];
+	int[] a = new int[7];
 	private int blockType;
 	private int turnState;
 	private int x, y, hold, next, change;
 	private int flag = 0;
 	private Image b1, b2;
 	int shf = 320;
+	private int[] levelExp = { 0, 5, 10, 15, 20, 30, 40, 50, 100, 200, 300, 500 };
 	private Image[] color = new Image[7];
 	public Data enemyData; //<hong>
 	protected int state;
-	// [] S������ [] Rotate [] 4*4
+	// [] S���蕭��頩�頩縈�頩�頩�頩蕭 [] Rotate [] 4*4
 	private final int shapes[][][] = new int[][][] {
 			// I
 			{ { 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0 },
@@ -79,6 +86,7 @@ public class TetrisPanel extends JPanel {
 					{ 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0 } } };
 
 	public TetrisPanel(PetSeq petSeq1) {
+		num = 0;
 		petSeq = petSeq1;
 		this.setLayout(null);
 		this.setBackground(Color.BLACK);
@@ -91,7 +99,6 @@ public class TetrisPanel extends JPanel {
 		color[4] = Toolkit.getDefaultToolkit().getImage("yellow.png");
 		color[5] = Toolkit.getDefaultToolkit().getImage("orange.png");
 		color[6] = Toolkit.getDefaultToolkit().getImage("pink.png");
-
 		JLabel NEXT = new JLabel("NEXT");
 		NEXT.setFont(new Font("", Font.BOLD, 50));
 		NEXT.setBounds(500 + shf, 0, 200, 100);
@@ -108,6 +115,7 @@ public class TetrisPanel extends JPanel {
 		hold = -1;
 		next = (int) (Math.random() * 7);
 		timer.start();
+		timer_paint.start();
 		JLabel attack_le = new JLabel("ATTACK");
 		attack_le.setFont(new Font("", Font.BOLD, 12));
 		attack_le.setBounds(shf - 230, 100, 100, 100);
@@ -119,16 +127,14 @@ public class TetrisPanel extends JPanel {
 		damage.setForeground(Color.red);
 		add(damage);
 		for (int i = 0; i < 7; i++) {
+			a[i]=0;
+			attack_list_sum[i+1]=0;
+			LEVEL[i] = new JLabel();
 			Image image = petSeq.pet[i].getIcon().getImage(); // transform it
 			Image newimg = image.getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
 			Icon icon = new ImageIcon(newimg);
-
-			LEVEL[i] = new JLabel("LEVEL" + Integer.toString(petSeq.pet[i].getLevel()));
-			LEVEL[i].setFont(new Font("", Font.BOLD, 20));
-			LEVEL[i].setBounds(shf - 100, 110 + 80 * i, 100, 100);
-			LEVEL[i].setForeground(Color.WHITE);
-			add(LEVEL[i]);
-
+			level_tem[i] = petSeq.pet[i].getLevel();
+			exp_tem[i] = petSeq.pet[i].getExp();
 			attack_amount[i] = new JLabel("0");
 			attack_amount[i].setFont(new Font("", Font.BOLD, 20));
 			attack_amount[i].setBounds(shf - 210, 120 + 80 * i, 100, 100);
@@ -146,17 +152,25 @@ public class TetrisPanel extends JPanel {
 			EXP[i].setBounds(shf - 100, 140 + 80 * i, 100, 100);
 			EXP[i].setForeground(Color.WHITE);
 			add(EXP[i]);
+
+			exp[i] = new JLabel(image_exp);
+			System.out.print("pet" + i + "=" + petSeq.pet[i].getExp());
 			l_pet[i] = new JLabel(icon);
 			l_pet[i].setBounds(shf - 200, 130 + 80 * i, 100, 100);
 			add(l_pet[i]);
+			int exp_percent = exp_tem[i] * 100 / levelExp[level_tem[i]];
+			exp[i].setBounds(shf - 50, 180 + 80 * i, exp_percent, 15);
+			add(exp[i]);
 		}
 		for (int k = 0; k < 100/* curblood*100/emeny.blood */; k++) {
 			blood[k] = new JLabel(icon1);
 			blood[k].setBounds(500 + shf + k, 300, 1, 20);
 			add(blood[k]);
 		}
+		level();
 		enemyData= new Data();
 		state= Data.MODE_PERSONAL_TETRIS;
+		// draw();
 	}
 
 	public void initattack() {
@@ -185,7 +199,7 @@ public class TetrisPanel extends JPanel {
 
 	public void level() {
 		for (int i = 0; i < 7; i++) {
-			LEVEL[i] = new JLabel("LEVEL" + Integer.toString(petSeq.pet[i].getLevel()));
+			LEVEL[i].setText("LEVEL" + Integer.toString(level_tem[i]));
 			LEVEL[i].setFont(new Font("", Font.BOLD, 20));
 			LEVEL[i].setBounds(shf - 100, 110 + 80 * i, 100, 100);
 			LEVEL[i].setForeground(Color.WHITE);
@@ -200,23 +214,69 @@ public class TetrisPanel extends JPanel {
 		win.setForeground(Color.white);
 		add(win);
 		get_exp();
-		draw_level();
-		gametime = false;
+		battle_finish = true;
+		// draw_level();
+
 		timer.stop();
 
 	}
 
-	public void draw_level() {
+	public void get_exp() {
 		for (int i = 0; i < 7; i++) {
-			LEVEL[i].setText("LEVEL" + Integer.toString(petSeq.pet[i].getLevel()));
+			int k = attack_list_sum[i + 1] * enemy_exp / total;
+			petSeq.pet[i].setExp(k);
+			System.out.println(k);
+			System.out.println(" pet" + i + " exp=" + petSeq.pet[i].getExp());
+			System.out.println(" pet" + i + " level=" + petSeq.pet[i].getLevel());
+			a[i]=0;
+			getexp[i] = new JLabel("EXP+"+k);
+			getexp[i].setFont(new Font("", Font.BOLD, 20));
+			getexp[i].setBounds(shf +70, 140 + 80 * i, 100, 100);
+			getexp[i].setForeground(Color.GREEN);
+			add(getexp[i]);
+			add(EXP[i]);
+			if (attack_list_sum[i+1] == 0) {
+				num++;
+				a[i]=1;
+			}
 		}
 	}
 
-	public void get_exp() {
+	public void draw() {
 		for (int i = 0; i < 7; i++) {
-			petSeq.pet[i].setExp(50);
-			System.out.print(" pet" + i + " exp=" + petSeq.pet[i].getExp());
-			System.out.print(" pet" + i + " level=" + petSeq.pet[i].getLevel());
+			if (battle_finish) {
+				//System.out.print(" a[]"+i+"="+a[i]);
+				if (exp_tem[i] == levelExp[level_tem[i]]) {
+					level_tem[i]++;
+					exp_tem[i] = 0;
+					JLabel levelup=new JLabel(image_exp);
+					levelup.setBounds(10, 110+80*i,100,100);
+					add(levelup);
+					level();
+					
+				}
+				int exp_percent = exp_tem[i] * 100 / levelExp[level_tem[i]];
+				exp[i].setBounds(shf - 50, 180 + 80 * i, exp_percent, 15);
+				add(exp[i]);
+				if (petSeq.pet[i].getLevel() <= level_tem[i] && petSeq.pet[i].getExp() <= exp_tem[i] && a[i] != 1&&attack_list_sum[i+1]!=0) {
+					a[i] = 1;
+					num++;
+					level();
+					System.out.println(num);
+					System.out.println("pet" + i + ":" + "exp_tem=" + exp_tem[i] + " exp=" + petSeq.pet[i].getExp());
+					System.out.println(
+							"pet" + i + ":" + "level_tem=" + level_tem[i] + " level=" + petSeq.pet[i].getLevel());
+				}
+				if (a[i] != 1) {
+					exp_tem[i]++;
+				}
+				if (num == 7) {
+					timer_paint.stop();
+					//Sleep(3000);
+					num = 0;
+					gametime = false;
+				}
+			}
 		}
 	}
 
@@ -242,19 +302,23 @@ public class TetrisPanel extends JPanel {
 		turnState = 0;
 		x = 3;
 		y = 0;
+		repaint();
 		if (gameOver(x, y) == 1) {
-			initMap();
+			int m=0;
 			JLabel over = new JLabel("GAME OVER !!!");
+			add(over);
 			over.setFont(new Font("", Font.BOLD, 45));
 			over.setBounds(150 + shf, 200, 400, 200);
 			over.setForeground(Color.white);
-			gametime = false;
+			m++;
 			timer.stop();
-
-			add(over);
-			// JOptionPane.showMessageDialog(null, "GAME OVER");
+			if(m==1) {
+				Sleep(3000);
+				gametime=false;
+			}
+			
 		}
-		repaint();
+
 	}
 
 	public void setBlock(int x, int y, int type, int state) {
@@ -311,6 +375,7 @@ public class TetrisPanel extends JPanel {
 	}
 
 	public int down_shift() {
+
 		int canDown = 0;
 		if (blow(x, y + 1, blockType, turnState) == 1) {
 			y++;
@@ -329,7 +394,6 @@ public class TetrisPanel extends JPanel {
 	}
 
 	void delLine() {
-		playSound();
 		int idx = 19, access = 0;
 		for (int i = 19; i >= 0; i--) {
 			int cnt = 0;
@@ -371,13 +435,7 @@ public class TetrisPanel extends JPanel {
 			for (int j = 0; j < 20; j++)
 				map[i][j] = 0;
 	}
-	
-	public int getState() {
-		return state;
-	}
-	public int getDmg() {
-		return total;
-	}
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
@@ -411,10 +469,15 @@ public class TetrisPanel extends JPanel {
 				g.drawImage(color[next], (i % 4) * 33 + 530 + shf, (i / 4) * 33 + 3 + 80, null);
 			}
 		}
-		
 		paintCharacter(g);
 	}
-	
+
+	public void keyReleased(KeyEvent e) {
+	}
+
+	public void keyTyped(KeyEvent e) {
+	}
+
 	//<hong>
 	public void paintCharacter(Graphics g) {
 		
@@ -422,8 +485,15 @@ public class TetrisPanel extends JPanel {
 	public void setData(Data enemyData) {
 		this.enemyData= enemyData;
 	}
+	public int getState() {
+		return state;
+	}
+	public int getDmg() {
+		return total;
+	}
+	
 	public void keyPressed1(KeyEvent e) {
-		if (gametime) {
+		if (gametime && gameOver(x, y) == 0) {
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_DOWN:
 				down_shift();
@@ -468,17 +538,6 @@ public class TetrisPanel extends JPanel {
 			System.exit(0);
 		}
 	}
-	static public void playSound() {
-	    try {
-	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("coin01.mp3").getAbsoluteFile());
-	        Clip clip = AudioSystem.getClip();
-	        clip.open(audioInputStream);
-	        clip.start();
-	    } catch(Exception ex) {
-	        System.out.println("Error with playing sound.123");
-	        ex.printStackTrace();
-	    }
-	}
 
 	class TimerListener implements ActionListener {
 
@@ -487,5 +546,11 @@ public class TetrisPanel extends JPanel {
 			down_shift();
 		}
 	}
-	
+
+	class TimerListener_paint implements ActionListener {
+
+		public void actionPerformed(ActionEvent e) {
+			draw();
+		}
+	}
 }
