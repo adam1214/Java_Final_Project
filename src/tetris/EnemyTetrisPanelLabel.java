@@ -26,6 +26,7 @@ public class EnemyTetrisPanelLabel {
 	public EnemyTetrisPanelLabel() {
 		this("./image/tetris/blackground1.png", 0, 0, 30, 30);
 	}
+
 	
 	public synchronized void reset(String res) {
 		panel.remove(label);

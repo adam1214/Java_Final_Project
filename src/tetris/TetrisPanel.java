@@ -11,6 +11,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
+
+import connect.Data;
 import role.*;
 
 public class TetrisPanel extends JPanel {
@@ -43,6 +45,8 @@ public class TetrisPanel extends JPanel {
 	private Image b1, b2;
 	int shf = 320;
 	private Image[] color = new Image[7];
+	public Data enemyData; //<hong>
+	protected int state;
 	// [] S������ [] Rotate [] 4*4
 	private final int shapes[][][] = new int[][][] {
 			// I
@@ -151,6 +155,8 @@ public class TetrisPanel extends JPanel {
 			blood[k].setBounds(500 + shf + k, 300, 1, 20);
 			add(blood[k]);
 		}
+		enemyData= new Data();
+		state= Data.MODE_PERSONAL_TETRIS;
 	}
 
 	public void initattack() {
@@ -365,7 +371,13 @@ public class TetrisPanel extends JPanel {
 			for (int j = 0; j < 20; j++)
 				map[i][j] = 0;
 	}
-
+	
+	public int getState() {
+		return state;
+	}
+	public int getDmg() {
+		return total;
+	}
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
@@ -399,8 +411,17 @@ public class TetrisPanel extends JPanel {
 				g.drawImage(color[next], (i % 4) * 33 + 530 + shf, (i / 4) * 33 + 3 + 80, null);
 			}
 		}
+		
+		paintCharacter(g);
 	}
-
+	
+	//<hong>
+	public void paintCharacter(Graphics g) {
+		
+	}
+	public void setData(Data enemyData) {
+		this.enemyData= enemyData;
+	}
 	public void keyPressed1(KeyEvent e) {
 		if (gametime) {
 			switch (e.getKeyCode()) {

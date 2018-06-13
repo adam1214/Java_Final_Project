@@ -4,12 +4,17 @@ import java.io.Serializable;
 import role.*;
 
 public class Data implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int MAP_CONTROL= 1, TETRIS_CONTROL= 2, NONE= 3;
 	public static final int SERVER= 1, CLIENT= 2;
-	public static final int MODE_NONE= 0, MODE_MAP= 1, MODE_PERSONAL_TETRIS= 2, MODE_BATTLE= 3, MODE_PERSONAL_TETRIS_ANIMATION= 4, MODE_BATTLE_ANIMATION= 5, MODE_BATTLE_TETRIS_INITIAL= 6, MODE_PERSONAL_TETRIS_INITIAL= 7;
+	public static final int MODE_NONE= 0, MODE_MAP= 1, MODE_PERSONAL_TETRIS= 2, MODE_BATTLE= 3, MODE_PERSONAL_TETRIS_ANIMATION= 4, MODE_BATTLE_ANIMATION= 5, MODE_BATTLE_TETRIS_INITIAL= 6, MODE_PERSONAL_TETRIS_INITIAL= 7, MODE_BATTLE_WIN= 8, MODE_BATTLE_LOSE= 9, MODE_BATTLE_END= 10;
 	private int state;  // 1 map mode  2 personal Tetris 3 battle  10 start battle
 	private int x;
 	private int y;
+	private int dmg;
 	private int map[][];
 	private PetSeq petSeq;
 	//public int testNum= 10;
@@ -57,6 +62,12 @@ public class Data implements Serializable{
 	}
 	public void setMap(int[][] map) {
 		this.map = map;
+	}
+	public void setDmg(int dmg) {
+		this.dmg= dmg;
+	}
+	public int getDmg() {
+		return this.dmg;
 	}
 	
 }

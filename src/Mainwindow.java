@@ -174,25 +174,25 @@ public class Mainwindow extends JFrame implements KeyListener {
 		if (btnUp) {
 			// obj2.setImgPosition(obj2.getX(), obj2.getY() + 1);
 			map.mapUp();
-			map.mapDirY = map.UP;
+			map.mapDirY = Map.UP;
 			changeFlag = true;
 		}
 		if (btnDown) {
 			// obj2.setImgPosition(obj2.getX(), obj2.getY() - 1);
 			map.mapDown();
-			map.mapDirY = map.DOWN;
+			map.mapDirY = Map.DOWN;
 			changeFlag = true;
 		}
 		if (btnLeft) {
 			// obj2.setImgPosition(obj2.getX() + 1, obj2.getY());
 			map.mapLeft();
-			map.mapDirX = map.LEFT;
+			map.mapDirX = Map.LEFT;
 			changeFlag = true;
 		}
 		if (btnRight) {
 			// obj2.setImgPosition(obj2.getX() - 1, obj2.getY());
 			map.mapRight();
-			map.mapDirX = map.RIGHT;
+			map.mapDirX = Map.RIGHT;
 			changeFlag = true;
 		}
 
@@ -204,7 +204,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 
 	public void openTetris() {
 		if(enemyData.getState() == Data.MODE_MAP && state == Data.MODE_MAP) {
-			if(enemyData.getX() == Map.mapX && enemyData.getY() == Map.mapY) {
+			if(enemyData.getX() == map.mapX && enemyData.getY() == map.mapY) {
 				blackFlag = true;
 				btnRight = false;
 				btnLeft = false;
@@ -248,7 +248,8 @@ public class Mainwindow extends JFrame implements KeyListener {
 		if(keyboardFlag == Data.MAP_CONTROL)
 			return;
 		if(TetrisPanel.gametime == false) {
-
+			
+			setSize(width, height);
 			tetrisPanel.setVisible(false);
 			tetrisPanel= null;
 			TetrisPanel.gametime= true;
@@ -279,7 +280,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 		y= enemyData.getY();
 		//System.out.println(y);
 		//otherPlayer.setImgPosition(100, 100);
-		otherPlayer.setImgPosition(x - Map.mapX + 550, y - Map.mapY + 350);
+		otherPlayer.setImgPosition(x - map.mapX + 550, y - map.mapY + 350);
 //		otherPlayer.setVisible(true);
 	}
 	
@@ -287,19 +288,20 @@ public class Mainwindow extends JFrame implements KeyListener {
 		//player data set
 		
 		playerData.setState(state);
-		playerData.setX(Map.mapX);
-		playerData.setY(Map.mapY);
+		playerData.setX(map.mapX);
+		playerData.setY(map.mapY);
 		
 		if(state == Data.MODE_BATTLE) {
 			//System.out.println("start send!!");
 			playerData.setMap(tetrisPanel.map);
+			playerData.setDmg(tetrisPanel.getDmg());
 		}
 			
 		
 		if(type == Data.SERVER) {
 			server.setMyData(playerData);
 			enemyData= server.getClientData();
-			enemyTetrisPanel.setData(enemyData);
+			enemyTetrisPanel.setData(playerData, enemyData);
 			
 //			int map[][]= enemyData.getMap();
 //			for(int i=0; i<10; i++) {
@@ -316,7 +318,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 	
 	public void battle() {
 		if(state == Data.MODE_PERSONAL_TETRIS_INITIAL) {
-		setSize(1600, 800);
+		setSize(1200, 800);
 		tetrisPanel = new TetrisPanel(petSeq);
 		tetrisPanel.setVisible(true);
 		tetrisPanel.setBounds(0, 0, 1200, 800);
@@ -325,15 +327,17 @@ public class Mainwindow extends JFrame implements KeyListener {
 		state= Data.MODE_PERSONAL_TETRIS;
 		}
 		else if(state == Data.MODE_BATTLE_TETRIS_INITIAL) {
-			setSize(1600, 800);
-			tetrisPanel = new TetrisPanel(petSeq);
+			setSize(2000, 800);
+			tetrisPanel = new BattleTetris(petSeq);
 			tetrisPanel.setVisible(true);
 			tetrisPanel.setBounds(0, 0, 1200, 800);
 			add(tetrisPanel);
 			keyboardFlag = Data.TETRIS_CONTROL;
 			state= Data.MODE_BATTLE;
+			tetrisPanel.setData(enemyData);
 		}
 		else if(state == Data.MODE_BATTLE) {
+			tetrisPanel.setData(enemyData);
 			//System.out.println("repaint");
 			//enemyTetrisPanel.repaintMap();
 		}
@@ -368,7 +372,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 		public void actionPerformed(ActionEvent e) {
 			(new SendClient(enemyData, playerData)).start();
 			enemyData= client.getServerData();
-			enemyTetrisPanel.setData(enemyData);
+			enemyTetrisPanel.setData(playerData, enemyData);
 		}
 	}
 	

@@ -1,14 +1,14 @@
 package map;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 
 public class Map {
 	public int mapDirX= 0, mapDirY= 0;
 	public static final int UP= 1, RIGHT= 2, DOWN= 3, LEFT= 4;
 	public MapUnit [][] mapUnit= new MapUnit[3][3];
 	private final int speedX= 2, speedY= 2;
-	private final int centerX= 600, centerY= 400;
-	public static int mapX= -50, mapY= -50;
+	//private final int centerX= 600, centerY= 400;
+	public int mapX= -50, mapY= -50;
 	public Map(){
 		for(int i=0; i<3; i++) {
 			for(int j= 0; j < 3; j++) {

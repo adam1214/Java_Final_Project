@@ -92,7 +92,7 @@ public class Start extends JFrame implements ActionListener {
 	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("Startmusic.mp3").getAbsoluteFile());
 	        Clip clip = AudioSystem.getClip();
 	        clip.open(audioInputStream);
-	        clip.start();
+	        //clip.start();
 	    } catch(Exception ex) {
 	        System.out.println("Error with playing sound.");
 	        ex.printStackTrace();
