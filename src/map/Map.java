@@ -3,13 +3,12 @@ package map;
 import java.util.ArrayList;
 
 public class Map {
-	
-	public static final int MAP_CONTROL= 1, TETRIS_CONTROL= 2, NONE= 3;
 	public int mapDirX= 0, mapDirY= 0;
 	public static final int UP= 1, RIGHT= 2, DOWN= 3, LEFT= 4;
 	public MapUnit [][] mapUnit= new MapUnit[3][3];
 	private final int speedX= 2, speedY= 2;
 	private final int centerX= 600, centerY= 400;
+	public static int mapX= -50, mapY= -50;
 	public Map(){
 		for(int i=0; i<3; i++) {
 			for(int j= 0; j < 3; j++) {
@@ -19,14 +18,15 @@ public class Map {
 	}
 	
 	public int getMapX() {
-		return mapUnit[1][1].x;
+		return mapX;
 	}
 	
 	public int getMapY() {
-		return mapUnit[1][1].y;
+		return mapY;
 	}
 	
 	public void mapUp() {
+		mapY-= speedY;
 		for(int i=0; i<3; i++) {
 			for(int j= 0; j < 3; j++) {
 				mapUnit[i][j].setImgPosition(mapUnit[i][j].getX(), mapUnit[i][j].getY() + speedY);
@@ -35,6 +35,7 @@ public class Map {
 		checkMapRange();
 	}
 	public void mapDown() {
+		mapY+= speedY;
 		for(int i=0; i<3; i++) {
 			for(int j= 0; j < 3; j++) {
 				mapUnit[i][j].setImgPosition(mapUnit[i][j].getX(), mapUnit[i][j].getY() - speedY);
@@ -43,6 +44,7 @@ public class Map {
 		checkMapRange();
 	}
 	public void mapRight() {
+		mapX+= speedX;
 		for(int i=0; i < 3; i++) {
 			for(int j= 0; j < 3; j++) {
 				mapUnit[i][j].setImgPosition(mapUnit[i][j].getX() - speedX, mapUnit[i][j].getY());
@@ -51,6 +53,7 @@ public class Map {
 		checkMapRange();
 	}
 	public void mapLeft() {
+		mapX-= speedX;
 		for(int i=0; i < 3; i++) {
 			for(int j= 0; j < 3; j++) {
 				mapUnit[i][j].setImgPosition(mapUnit[i][j].getX() + speedX, mapUnit[i][j].getY());

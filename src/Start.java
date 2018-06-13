@@ -20,15 +20,15 @@ public class Start extends JFrame implements ActionListener {
 	JFrame f;
 
 	public Start() {
-		f = new JFrame("¶}©lµe­±");
+		f = new JFrame("ï¿½}ï¿½lï¿½eï¿½ï¿½");
 		try {
-			JButton btn = new JButton("³æ¤H¹CÀ¸");
+			JButton btn = new JButton("ï¿½ï¿½Hï¿½Cï¿½ï¿½");
 			f.add(btn, BorderLayout.NORTH);
 			btn.setLocation(550, 200);
 			btn.setSize(100, 100);
 			f.getContentPane().add(btn);
 			
-			JButton btn1 = new JButton("Âù¤H¹ï¾Ô");
+			JButton btn1 = new JButton("ï¿½ï¿½ï¿½Hï¿½ï¿½ï¿½");
 			f.add(btn1, BorderLayout.NORTH);
 			btn1.setLocation(550, 350);
 			btn1.setSize(100, 100);
@@ -61,7 +61,7 @@ public class Start extends JFrame implements ActionListener {
 			btn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					f.setVisible(false);
-					Mainwindow m = new Mainwindow();
+					Mainwindow m = new Mainwindow(1);
 					m.setVisible(true);
 				}
 			});
@@ -69,7 +69,7 @@ public class Start extends JFrame implements ActionListener {
 			btn1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					f.setVisible(false);
-					Mainwindow m = new Mainwindow();
+					Mainwindow m = new Mainwindow(2);
 					m.setVisible(true);
 				}
 			});

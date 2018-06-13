@@ -8,6 +8,7 @@ import javax.swing.*;
 import role.*;
 import tetris.*;
 import map.*;
+import connect.*;
 
 public class Mainwindow extends JFrame implements KeyListener {
 	/**
@@ -16,14 +17,38 @@ public class Mainwindow extends JFrame implements KeyListener {
 	private static final long serialVersionUID = 1L;
 	private final int width = 1200, height = 800;
 	private boolean btnRight, btnLeft, btnUp, btnDown;
-	private DrawPicture player, obj2;
+	private DrawPicture player, otherPlayer;
 	private Map map;
-	private TetrisPanel terisPanel;
-	private int keyFlag, con = 0;
+	private TetrisPanel tetrisPanel;
+	private EnemyTetrisPanel enemyTetrisPanel;
+	private int keyboardFlag, con = 0;
 	private DrawPicture[][] blackSquare = new DrawPicture[6][4];
 	private int blackSquareX = 0, blackSquareY = 0;
 	private boolean blackFlag = false;
 	private PetSeq petSeq= new PetSeq();
+	private Data playerData, enemyData;
+	private int state= Data.MODE_MAP;
+	
+	//<Mark>
+	private int type;
+	SendServer server = new SendServer();
+	SendClient client = new SendClient();
+	
+	//<Mark>
+	public Mainwindow(int i) {
+		this();
+		type = i;
+		if (type == Data.SERVER) {
+			try {
+				server.start();
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}else if(type== Data.CLIENT) {
+			Timer time02 = new Timer(10, new sendMess());
+			time02.start();
+		}
+	}
 	
 	public Mainwindow() {
 		setTitle("Game");
@@ -34,14 +59,13 @@ public class Mainwindow extends JFrame implements KeyListener {
 		btnLeft = false;
 		btnUp = false;
 		btnDown = false;
-		keyFlag = Map.MAP_CONTROL;
+		keyboardFlag = Data.MAP_CONTROL;
 		addKeyListener(this);
 		DrawPicture.panel = new JPanel(null);
 		DrawPicture.panel.setBounds(0, 0, width, height);
+		enemyTetrisPanel= new EnemyTetrisPanel();
+		add(enemyTetrisPanel);
 		add(DrawPicture.panel);
-		// DrawPicture.panel.setVisible(false);
-		// remove(DrawPicture.panel);
-		// 上面不用動
 
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 4; j++) {
@@ -50,13 +74,13 @@ public class Mainwindow extends JFrame implements KeyListener {
 			}
 		}
 
-		// 在下面new 新的物件
 		player = new DrawPicture("pikachu.png", 550, 350, 100, 100);
 		Role player = new Player();
-		DrawPicture d_player = new DrawPicture(player.getPath(), 100, 100, 100, 100);
+		otherPlayer = new DrawPicture(player.getPath(), -1200, -1200, 100, 100);
 		// obj2= new DrawPicture("map1010.jpg", 0, 0, 1200, 1200);
 		map = new Map();
-
+		playerData= new Data();
+		enemyData= new Data();
 		Timer time = new Timer(10, new TimeChange());
 		time.start();
 	}
@@ -69,7 +93,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if (keyFlag == Map.MAP_CONTROL) {
+		if (keyboardFlag == Data.MAP_CONTROL) {
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_A:
 				btnLeft = true;
@@ -84,8 +108,8 @@ public class Mainwindow extends JFrame implements KeyListener {
 				btnUp = true;
 				break;
 			}
-		} else if (keyFlag == Map.TETRIS_CONTROL) {
-			terisPanel.keyPressed1(e);
+		} else if (keyboardFlag == Data.TETRIS_CONTROL) {
+			tetrisPanel.keyPressed1(e);
 		}
 
 	}
@@ -93,7 +117,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if (keyFlag == Map.MAP_CONTROL) {
+		if (keyboardFlag == Data.MAP_CONTROL) {
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_A:
 				btnLeft = false;
@@ -178,7 +202,179 @@ public class Mainwindow extends JFrame implements KeyListener {
 		return false;
 	}
 
+	public void openTetris() {
+		if(enemyData.getState() == Data.MODE_MAP && state == Data.MODE_MAP) {
+			if(enemyData.getX() == Map.mapX && enemyData.getY() == Map.mapY) {
+				blackFlag = true;
+				btnRight = false;
+				btnLeft = false;
+				btnUp = false;
+				btnDown = false;
+				keyboardFlag = Data.NONE;
+				state = Data.MODE_BATTLE_ANIMATION;
+			}
+		}
+		else if(enemyData.getState() == Data.MODE_BATTLE_ANIMATION && state == Data.MODE_MAP) {
+			blackFlag = true;
+			btnRight = false;
+			btnLeft = false;
+			btnUp = false;
+			btnDown = false;
+			keyboardFlag= Data.NONE;
+			state= Data.MODE_BATTLE_ANIMATION;
+		}
+		if(state == Data.MODE_MAP) {
+			int num = 0;
+			int disX = player.x - map.getMapX();
+			int disY = player.y - map.getMapY();
+			if ((disX % 100 == 50) || (disY % 100 == 50)) {
+				Random ran = new Random();
+				num = ran.nextInt(100);
+			}
+			if (num > 90) {
+				blackFlag = true;
+				btnRight = false;
+				btnLeft = false;
+				btnUp = false;
+				btnDown = false;
+				keyboardFlag = Data.NONE;
+				state = Data.MODE_PERSONAL_TETRIS_ANIMATION;
+			}
+		}
+
+	}
+	
+	public void checkTetrisState() {
+		if(keyboardFlag == Data.MAP_CONTROL)
+			return;
+		if(TetrisPanel.gametime == false) {
+
+			tetrisPanel.setVisible(false);
+			tetrisPanel= null;
+			TetrisPanel.gametime= true;
+			keyboardFlag= Data.MAP_CONTROL;
+			state= Data.MODE_MAP;
+			clearBlackAnimate();
+		}
+	}
+
+	public void clearBlackAnimate() {
+		for(int i= 0; i < 6; i++) {
+			for(int j= 0; j < 4; j++) {
+				blackSquare[i][j].setVisible(false);
+			}
+		}
+	}
+	
+	public void drawOtherPlayer() {
+//		if(enemyData.getState() == Data.MODE_NONE) {
+//			otherPlayer.setVisible(false);
+//			return;
+//		}
+			
+		
+		int x, y;
+		
+		x= enemyData.getX();
+		y= enemyData.getY();
+		//System.out.println(y);
+		//otherPlayer.setImgPosition(100, 100);
+		otherPlayer.setImgPosition(x - Map.mapX + 550, y - Map.mapY + 350);
+//		otherPlayer.setVisible(true);
+	}
+	
+	public void setData() {
+		//player data set
+		
+		playerData.setState(state);
+		playerData.setX(Map.mapX);
+		playerData.setY(Map.mapY);
+		
+		if(state == Data.MODE_BATTLE) {
+			//System.out.println("start send!!");
+			playerData.setMap(tetrisPanel.map);
+		}
+			
+		
+		if(type == Data.SERVER) {
+			server.setMyData(playerData);
+			enemyData= server.getClientData();
+			enemyTetrisPanel.setData(enemyData);
+			
+//			int map[][]= enemyData.getMap();
+//			for(int i=0; i<10; i++) {
+//				for(int j=0; j<20; j++) {
+//					System.out.print(map[i][j]);
+//				}
+//				System.out.println();
+//			}
+		}
+		else if(type == Data.CLIENT) {
+			
+		}
+	}
+	
+	public void battle() {
+		if(state == Data.MODE_PERSONAL_TETRIS_INITIAL) {
+		setSize(1600, 800);
+		tetrisPanel = new TetrisPanel(petSeq);
+		tetrisPanel.setVisible(true);
+		tetrisPanel.setBounds(0, 0, 1200, 800);
+		add(tetrisPanel);
+		keyboardFlag = Data.TETRIS_CONTROL;
+		state= Data.MODE_PERSONAL_TETRIS;
+		}
+		else if(state == Data.MODE_BATTLE_TETRIS_INITIAL) {
+			setSize(1600, 800);
+			tetrisPanel = new TetrisPanel(petSeq);
+			tetrisPanel.setVisible(true);
+			tetrisPanel.setBounds(0, 0, 1200, 800);
+			add(tetrisPanel);
+			keyboardFlag = Data.TETRIS_CONTROL;
+			state= Data.MODE_BATTLE;
+		}
+		else if(state == Data.MODE_BATTLE) {
+			//System.out.println("repaint");
+			//enemyTetrisPanel.repaintMap();
+		}
+		else {
+			return;
+		}
+	}
+	
+	class TimeChange implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			setData();
+			
+			if (!mapChange())
+				mapChangeInteger();
+			blackAnimate();
+			openTetris();
+			checkTetrisState();
+			drawOtherPlayer();
+			battle();
+			//enemyTetrisPanel.repaintMap();
+			
+		}
+
+	}
+	
+	//<Mark>
+	class sendMess implements ActionListener {
+
+		
+		public void actionPerformed(ActionEvent e) {
+			(new SendClient(enemyData, playerData)).start();
+			enemyData= client.getServerData();
+			enemyTetrisPanel.setData(enemyData);
+		}
+	}
+	
 	public void blackAnimate() {
+		if(!blackFlag)
+			return;
 		con++;
 		if (con == 1) {
 			blackSquare[blackSquareX][blackSquareY].setVisible(true);
@@ -326,73 +522,18 @@ public class Mainwindow extends JFrame implements KeyListener {
 			return;
 		}
 		if (con == 25) {
-			System.out.println("123");
+			//System.out.println("123");
 			blackSquareX = 0;
 			blackSquareY = 0;
 			blackFlag = false;
-			terisPanel = new TetrisPanel(petSeq);
-			terisPanel.setVisible(true);
-			terisPanel.setBounds(0, 0, 1200, 800);
-			add(terisPanel);
-			keyFlag = Map.TETRIS_CONTROL;
+			
+			if(state == Data.MODE_PERSONAL_TETRIS_ANIMATION)
+				state= Data.MODE_PERSONAL_TETRIS_INITIAL;
+			else if(state == Data.MODE_BATTLE_ANIMATION)
+				state= Data.MODE_BATTLE_TETRIS_INITIAL;
+			
 			con = 0;
 			return;
 		}
-	}
-
-	public void openTetris() {
-		int num = 0;
-		int disX = player.x - map.getMapX();
-		int disY = player.y - map.getMapY();
-		if ((disX % 100 == 50) || (disY % 100 == 50)) {
-			Random ran = new Random();
-			num = ran.nextInt(50);
-		}
-		if (num > 40) {
-			blackFlag = true;
-			btnRight = false;
-			btnLeft = false;
-			btnUp = false;
-			btnDown = false;
-			keyFlag= Map.NONE;
-			System.out.println("ok");
-		}
-	}
-	
-	public void checkTetrisStatue() {
-		if(keyFlag == Map.MAP_CONTROL)
-			return;
-		if(TetrisPanel.gametime == false) {
-
-			terisPanel.setVisible(false);
-			terisPanel= null;
-			TetrisPanel.gametime= true;
-			keyFlag= Map.MAP_CONTROL;
-			clearBlackAnimate();
-		}
-	}
-
-	public void clearBlackAnimate() {
-		for(int i= 0; i < 6; i++) {
-			for(int j= 0; j < 4; j++) {
-				blackSquare[i][j].setVisible(false);
-			}
-		}
-	}
-	
-	class TimeChange implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (!mapChange())
-				mapChangeInteger();
-			if (blackFlag)
-				blackAnimate();
-
-			openTetris();
-			checkTetrisStatue();
-
-		}
-
 	}
 }
