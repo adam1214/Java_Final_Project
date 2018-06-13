@@ -127,6 +127,8 @@ public class TetrisPanel extends JPanel {
 		damage.setBounds(shf - 300, 100, 100, 100);
 		damage.setForeground(Color.red);
 		add(damage);
+		
+		
 		for (int i = 0; i < 7; i++) {
 			a[i]=0;
 			attack_list_sum[i+1]=0;
@@ -134,6 +136,10 @@ public class TetrisPanel extends JPanel {
 			Image image = petSeq.pet[i].getIcon().getImage(); // transform it
 			Image newimg = image.getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
 			Icon icon = new ImageIcon(newimg);
+			l_pet[i] = new JLabel(icon);
+			l_pet[i].setBounds(shf - 200, 130 + 80 * i, 100, 100);
+			add(l_pet[i]);
+			
 			level_tem[i] = petSeq.pet[i].getLevel();
 			exp_tem[i] = petSeq.pet[i].getExp();
 			attack_amount[i] = new JLabel("0");
@@ -156,9 +162,6 @@ public class TetrisPanel extends JPanel {
 
 			exp[i] = new JLabel(image_exp);
 			System.out.print("pet" + i + "=" + petSeq.pet[i].getExp());
-			l_pet[i] = new JLabel(icon);
-			l_pet[i].setBounds(shf - 200, 130 + 80 * i, 100, 100);
-			add(l_pet[i]);
 			int exp_percent = exp_tem[i] * 100 / levelExp[level_tem[i]];
 			exp[i].setBounds(shf - 50, 180 + 80 * i, exp_percent, 15);
 			add(exp[i]);
@@ -172,6 +175,16 @@ public class TetrisPanel extends JPanel {
 		enemyData= new Data();
 		state= Data.MODE_PERSONAL_TETRIS;
 		// draw();
+	}
+
+	public TetrisPanel(PetSeq petSeq1,Enemy e) {
+		this(petSeq1);
+		Image image = e.getIcon().getImage(); // transform it
+		Image newimg = image.getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+		Icon icon = new ImageIcon(newimg);
+		JLabel enemy_lb= new JLabel(icon);
+		add(enemy_lb);
+		enemy_lb.setBounds(shf,250 , 100, 100);
 	}
 
 	public void initattack() {
