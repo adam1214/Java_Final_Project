@@ -96,9 +96,6 @@ public class Mainwindow extends JFrame implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if (keyboardFlag == Data.MAP_CONTROL) {
-			if(state == Data.MODE_END) {
-				state= Data.MODE_MAP;
-			}
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_A:
 				btnLeft = true;
@@ -250,9 +247,13 @@ public class Mainwindow extends JFrame implements KeyListener {
 	}
 	
 	public void checkTetrisState() {
+		if(state == Data.MODE_END) {
+			if(map.checkDistance(map.mapX, map.preX) >= 100 || map.checkDistance(map.mapY, map.preY) >= 100)
+			state= Data.MODE_MAP;
+		}
 		if(keyboardFlag == Data.MAP_CONTROL)
 			return;
-		if(state == Data.MODE_PERSONAL_WIN || state == Data.MODE_PERSONAL_LOSE) {
+		if(TetrisPanel.gametime == true && (state == Data.MODE_PERSONAL_WIN || state == Data.MODE_PERSONAL_LOSE)) {
 			setSize(width, height);
 			tetrisPanel.setVisible(false);
 			tetrisPanel= null;
@@ -263,8 +264,21 @@ public class Mainwindow extends JFrame implements KeyListener {
 			state= Data.MODE_END;
 			return;
 		}
+		else if(TetrisPanel.gametime == true && (state == Data.MODE_BATTLE_WIN || state == Data.MODE_BATTLE_LOSE)) {
+			setSize(width, height);
+			tetrisPanel.setVisible(false);
+			tetrisPanel= null;
+			
+			keyboardFlag= Data.MAP_CONTROL;
+			state= Data.MODE_MAP;
+			clearBlackAnimate();
+			state= Data.MODE_END;
+
+			return;
+		}
 		if(TetrisPanel.gametime == false) {
 			winLabelCounter++;
+			state= tetrisPanel.getState();			
 			if(winLabelCounter > 300) {
 				TetrisPanel.gametime= true;
 				winLabelCounter= 0;
@@ -291,7 +305,7 @@ public class Mainwindow extends JFrame implements KeyListener {
 	
 	public void setData() {
 		//player data set
-		
+
 		playerData.setState(state);
 		playerData.setX(map.mapX);
 		playerData.setY(map.mapY);
@@ -334,6 +348,8 @@ public class Mainwindow extends JFrame implements KeyListener {
 			tetrisPanel.setData(enemyData);
 		}
 		else if(state == Data.MODE_BATTLE) {
+			map.preX= map.mapX;
+			map.preX= map.mapY;
 			tetrisPanel.setData(enemyData);
 		}
 		else {

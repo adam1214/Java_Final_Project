@@ -38,6 +38,7 @@ public class BattleTetris extends TetrisPanel{
 	}
 	
 	public void paintCharacter(Graphics g) {
+		System.out.println(state);
 		//System.out.println("hello");
 		final int playerX= 1000, playerY= 100;
 		final int playerHeight= 200, playerWidth= 200;
@@ -46,7 +47,22 @@ public class BattleTetris extends TetrisPanel{
     	if(totalHp >= enemyData.getDmg()) {
     		g.drawImage(blood, playerX, playerY + playerHeight + 10, playerWidth * (totalHp - enemyData.getDmg()) / totalHp, 10, null);
     	}else {
-    		state= Data.MODE_BATTLE_LOSE;
+    		newBlock();
+    		modeLose();
+    	}
+    	if(total > 100) {
+    		win();
+    		modeWin();
+    	}
+    	//System.out.println(enemyData.getState());
+    	if((enemyData.getState() == Data.MODE_BATTLE_LOSE) && (state != Data.MODE_BATTLE_WIN)) {
+    		win();
+    		gametime = false;
+    		state= Data.MODE_BATTLE_WIN;
+    	}    	
+    	else if((enemyData.getState() == Data.MODE_BATTLE_WIN) && (state != Data.MODE_BATTLE_LOSE)) {
+    		newBlock();
+    		modeLose();
     	}
 	}
 	

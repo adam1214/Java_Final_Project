@@ -41,7 +41,7 @@ public class SendServer extends java.lang.Thread {
 						socket = server.accept();  //wait for connection
 
 					}
-					System.out.println("取得連線 : InetAddress = " + socket.getInetAddress());
+					//System.out.println("取得連線 : InetAddress = " + socket.getInetAddress());
 					socket.setSoTimeout(15000);
 				}
 				
@@ -57,12 +57,12 @@ public class SendServer extends java.lang.Thread {
 				socket.close();
 
 			} catch (java.io.IOException e) {
-				System.out.println("Socket連線有問題 !");
+				//System.out.println("Socket連線有問題 !");
 				socket=null;
-				System.out.println("IOException :" + e.toString());
+				//System.out.println("IOException :" + e.toString());
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			} 
 		}
 		

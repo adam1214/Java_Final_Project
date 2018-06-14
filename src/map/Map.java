@@ -1,15 +1,17 @@
 package map;
 
 //import java.util.ArrayList;
-
+import java.lang.Math;
 public class Map {
 	public int mapDirX= 0, mapDirY= 0;
 	public static final int UP= 1, RIGHT= 2, DOWN= 3, LEFT= 4;
 	public MapUnit [][] mapUnit= new MapUnit[3][3];
 	private final int speedX= 2, speedY= 2;
-	//private final int centerX= 600, centerY= 400;
 	public int mapX= -50, mapY= -50;
+	public int preX, preY;
 	public Map(){
+		preX= 0;
+		preY= 0;
 		for(int i=0; i<3; i++) {
 			for(int j= 0; j < 3; j++) {
 				mapUnit[i][j]= new Map1010(-1250 + (1200 * i), -1250 + (1200 * j));	
@@ -60,6 +62,11 @@ public class Map {
 			}
 		}
 		checkMapRange();
+	}
+	
+	public double checkDistance(double x1, double x2) {
+		//System.out.println(Math.sqrt((x1 - x2) * (x1 - x2)));
+		return Math.sqrt((x1 - x2) * (x1 - x2));
 	}
 	
 	public void checkMapRange() {

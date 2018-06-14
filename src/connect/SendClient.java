@@ -31,7 +31,7 @@ public class SendClient extends java.lang.Thread implements Serializable{
 			Socket client = new Socket();
 			client = new Socket(address, 4000);
 
-			System.out.println("Client 連線成功 準備開始傳資料 !");
+			//System.out.println("Client 連線成功 準備開始傳資料 !");
 			
 			ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
 			ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
@@ -46,11 +46,11 @@ public class SendClient extends java.lang.Thread implements Serializable{
 			ois.close();
 
 		} catch (java.io.IOException e) {
-			System.out.println("Socket連線有問題 !");
-			System.out.println("IOException :" + e.toString());
+			//System.out.println("Socket連線有問題 !");
+			//System.out.println("IOException :" + e.toString());
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 
