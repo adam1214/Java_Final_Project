@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.io.ObjectOutputStream;
 
 public class SendClient extends java.lang.Thread implements Serializable{
-	private String address = "127.0.0.1";
+	private String address = "172.20.10.5";
 	private int port = 4000;
 	private static Data serverData=new Data();
 	private Data myData=new Data();
@@ -31,7 +31,7 @@ public class SendClient extends java.lang.Thread implements Serializable{
 			Socket client = new Socket();
 			client = new Socket(address, 4000);
 
-			//System.out.println("Client 連線成功 準備開始傳資料 !");
+			//System.out.println("Client ��蝺��� 皞���鞈�� !");
 			
 			ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
 			ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
@@ -46,7 +46,7 @@ public class SendClient extends java.lang.Thread implements Serializable{
 			ois.close();
 
 		} catch (java.io.IOException e) {
-			//System.out.println("Socket連線有問題 !");
+			//System.out.println("Socket��蝺���� !");
 			//System.out.println("IOException :" + e.toString());
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block

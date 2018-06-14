@@ -51,6 +51,7 @@ public class TetrisPanel extends JPanel {
 	private int x, y, hold, next, change;
 	private int flag = 0;
 	private Image b1, b2;
+	private Image enemyPic;
 	int shf = 320;
 	private int[] levelExp = { 0, 5, 10, 15, 20, 30, 40, 50, 100, 200, 300, 500 };
 	private Image[] color = new Image[7];
@@ -179,13 +180,9 @@ public class TetrisPanel extends JPanel {
 	}
 
 	public TetrisPanel(PetSeq petSeq1,Enemy e) {
+		
 		this(petSeq1);
-		Image image = e.getIcon().getImage(); // transform it
-		Image newimg = image.getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-		Icon icon = new ImageIcon(newimg);
-		JLabel enemy_lb= new JLabel(icon);
-		add(enemy_lb);
-		enemy_lb.setBounds(shf,250 , 100, 100);
+		enemyPic = Toolkit.getDefaultToolkit().getImage(e.getPath());
 	}
 
 	public void initattack() {
@@ -482,7 +479,7 @@ public class TetrisPanel extends JPanel {
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
+		g.drawImage(enemyPic, 850, 380, 200, 200, null);
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 20; j++) {
 				if (map[i][j] == 0) {
@@ -513,6 +510,7 @@ public class TetrisPanel extends JPanel {
 				g.drawImage(color[next], (i % 4) * 33 + 530 + shf, (i / 4) * 33 + 3 + 80, null);
 			}
 		}
+		//g.drawImage(enemyPic, 1000, 200, 200, 200, null);
 		paintCharacter(g);
 	}
 

@@ -365,7 +365,13 @@ public class Mainwindow extends JFrame implements KeyListener {
 	public void battle() {
 		if (state == Data.MODE_PERSONAL_TETRIS_INITIAL) {
 			setSize(1200, 800);
-			tetrisPanel = new TetrisPanel(petSeq);
+			Enemy eTemp;
+			if((int)(Math.random() * 2) ==0 ){
+				eTemp=new ShinJie();
+			}else {
+				eTemp=new JungEun();
+			}
+			tetrisPanel = new TetrisPanel(petSeq,eTemp);
 			tetrisPanel.setVisible(true);
 			tetrisPanel.setBounds(0, 0, 1200, 800);
 			add(tetrisPanel);
