@@ -33,6 +33,7 @@ public class TetrisPanel extends JPanel {
 	public ImageIcon image_levelup = new ImageIcon("levelup.png");
 	public JLabel blood[] = new JLabel[100];
 	public JLabel exp[] = new JLabel[7];
+	public JLabel levelup[] = new JLabel[7];
 	public JLabel attack_amount[] = new JLabel[7];
 	public JLabel attack_amount_sum[] = new JLabel[7];
 	public JLabel LEVEL[] = new JLabel[7];
@@ -220,7 +221,15 @@ public class TetrisPanel extends JPanel {
 			add(LEVEL[i]);
 		}
 	}
-
+	public void level_up(int k) {
+		  Image image = image_levelup.getImage(); // transform it
+		  Image newimg = image.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+		  Icon icon = new ImageIcon(newimg);
+		  levelup[k] = new JLabel(icon);
+		  levelup[k].setBounds(shf -15, 130 + 80 * k, 50, 50);
+		  l_pet[k].add(levelup[k]);
+		  add(levelup[k]);
+		 }
 	 public void win() {
 		  JLabel win = new JLabel("YOU WIN !!!");
 		  win.setFont(new Font("", Font.BOLD, 50));
@@ -248,7 +257,9 @@ public class TetrisPanel extends JPanel {
 
 	public void get_exp() {
 		for (int i = 0; i < 7; i++) {
-			int k = attack_list_sum[i + 1] * enemy_exp / total;
+			int k= 0;
+			if(total != 0)
+				k = attack_list_sum[i + 1] * enemy_exp / total;
 			petSeq.pet[i].setExp(k);
 			System.out.println(k);
 			System.out.println(" pet" + i + " exp=" + petSeq.pet[i].getExp());
@@ -278,7 +289,7 @@ public class TetrisPanel extends JPanel {
 					levelup.setBounds(10, 110+80*i,100,100);
 					add(levelup);
 					level();
-					
+					level_up(i);
 				}
 				int exp_percent = exp_tem[i] * 100 / levelExp[level_tem[i]];
 				exp[i].setBounds(shf - 50, 180 + 80 * i, exp_percent, 15);
