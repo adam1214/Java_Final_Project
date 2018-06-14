@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 import javax.swing.*;
@@ -126,6 +127,8 @@ public class TetrisPanel extends JPanel {
 		damage.setBounds(shf - 300, 100, 100, 100);
 		damage.setForeground(Color.red);
 		add(damage);
+		
+		
 		for (int i = 0; i < 7; i++) {
 			a[i]=0;
 			attack_list_sum[i+1]=0;
@@ -133,6 +136,10 @@ public class TetrisPanel extends JPanel {
 			Image image = petSeq.pet[i].getIcon().getImage(); // transform it
 			Image newimg = image.getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
 			Icon icon = new ImageIcon(newimg);
+			l_pet[i] = new JLabel(icon);
+			l_pet[i].setBounds(shf - 200, 130 + 80 * i, 100, 100);
+			add(l_pet[i]);
+			
 			level_tem[i] = petSeq.pet[i].getLevel();
 			exp_tem[i] = petSeq.pet[i].getExp();
 			attack_amount[i] = new JLabel("0");
@@ -155,9 +162,6 @@ public class TetrisPanel extends JPanel {
 
 			exp[i] = new JLabel(image_exp);
 			System.out.print("pet" + i + "=" + petSeq.pet[i].getExp());
-			l_pet[i] = new JLabel(icon);
-			l_pet[i].setBounds(shf - 200, 130 + 80 * i, 100, 100);
-			add(l_pet[i]);
 			int exp_percent = exp_tem[i] * 100 / levelExp[level_tem[i]];
 			exp[i].setBounds(shf - 50, 180 + 80 * i, exp_percent, 15);
 			add(exp[i]);
@@ -171,6 +175,16 @@ public class TetrisPanel extends JPanel {
 		enemyData= new Data();
 		state= Data.MODE_PERSONAL_TETRIS;
 		// draw();
+	}
+
+	public TetrisPanel(PetSeq petSeq1,Enemy e) {
+		this(petSeq1);
+		Image image = e.getIcon().getImage(); // transform it
+		Image newimg = image.getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+		Icon icon = new ImageIcon(newimg);
+		JLabel enemy_lb= new JLabel(icon);
+		add(enemy_lb);
+		enemy_lb.setBounds(shf,250 , 100, 100);
 	}
 
 	public void initattack() {
@@ -207,19 +221,30 @@ public class TetrisPanel extends JPanel {
 		}
 	}
 
-	public void win() {
-		JLabel win = new JLabel("YOU WIN !!!");
-		win.setFont(new Font("", Font.BOLD, 50));
-		win.setBounds(170 + shf, 200, 300, 100);
-		win.setForeground(Color.white);
-		add(win);
-		get_exp();
-		battle_finish = true;
-		// draw_level();
+	 public void win() {
+		  JLabel win = new JLabel("YOU WIN !!!");
+		  win.setFont(new Font("", Font.BOLD, 50));
+		  win.setBounds(170 + shf, 200, 300, 100);
+		  win.setForeground(Color.white);
+		  add(win);
+		  get_exp();
+		  ImageIcon icon = null;
+		  try {
+		   icon = new ImageIcon(new URL("https://ws3.sinaimg.cn/large/9150e4e5jw1fcj532mtkvg206s05nmxv.gif"));
+		  } catch (MalformedURLException e) {
+		   // TODO Auto-generated catch block
+		   e.printStackTrace();
+		  }
+		  JLabel lb = new JLabel(icon);
+		  lb.setBounds(485 + shf, 330, 350, 330);
+		  add(lb);
+		  //lb.setLocation(0,0);
+		  battle_finish = true;
+		  // draw_level();
 
-		timer.stop();
+		  timer.stop();
 
-	}
+		 }
 
 	public void get_exp() {
 		for (int i = 0; i < 7; i++) {
@@ -311,8 +336,17 @@ public class TetrisPanel extends JPanel {
 			over.setForeground(Color.white);
 			m++;
 			timer.stop();
+			 ImageIcon icon = null;
+			  try {
+			   icon = new ImageIcon(new URL("https://i2.kknews.cc/SIG=296gbns/111100029o2s4q080pr1.jpg"));
+			  } catch (MalformedURLException e) {
+			   // TODO Auto-generated catch block
+			   e.printStackTrace();
+			  }
+			  JLabel lb = new JLabel(icon);
+			  lb.setBounds(485 + shf, 330, 350, 330);
+			  add(lb);
 			if(m==1) {
-				//Sleep(3000);
 				modeLose();
 			}
 			
