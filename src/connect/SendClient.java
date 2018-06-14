@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.io.ObjectOutputStream;
 
 public class SendClient extends java.lang.Thread implements Serializable{
-	private String address = "172.20.10.5";
+	private String address = "192.168.208.211";
 	private int port = 4000;
 	private static Data serverData=new Data();
 	private Data myData=new Data();

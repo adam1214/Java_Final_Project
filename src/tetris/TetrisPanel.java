@@ -479,7 +479,7 @@ public class TetrisPanel extends JPanel {
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.drawImage(enemyPic, 850, 380, 200, 200, null);
+		g.drawImage(enemyPic, 825, 190, 100, 100, null);
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 20; j++) {
 				if (map[i][j] == 0) {
